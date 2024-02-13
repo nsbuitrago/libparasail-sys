@@ -10,6 +10,7 @@ documentation = "https://docs.rs/libparasail_sys"
 readme = "README.md"
 keywords = ["bioinformatics", "alignment", "parasail", "rust", "ffi"]
 categories = ["bioinformatics", "science", "algorithms", "ffi"]
+exclude = ["tests/*", "target/*", "Cargo.lock"]
 
 [lib]
 name = "libparasail_sys"
