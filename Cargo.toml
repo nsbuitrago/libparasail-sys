@@ -2,6 +2,14 @@
 name = "libparasail-sys"
 version = "0.1.0"
 edition = "2021"
+license = "BSD-3-Clause"
+description = "Unsafe Rust bindings for the parasail C library"
+homepage = "gitlab.com/nsbuitrago/libparasail-sys"
+repository = "gitlab.com/nsbuitrago/libparasail-sys"
+documentation = "https://docs.rs/libparasail_sys"
+readme = "README.md"
+keywords = ["bioinformatics", "alignment", "parasail", "rust", "ffi"]
+categories = ["bioinformatics", "science", "algorithms", "ffi"]
 
 [lib]
 name = "libparasail_sys"
