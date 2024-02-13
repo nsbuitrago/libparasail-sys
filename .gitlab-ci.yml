@@ -5,7 +5,8 @@ image: "rust:latest"
 # Install a C compiler, cmake and git into the container.
 before_script:
   - apt-get update -yqq
-  - apt-get install -yqq --no-install-recommends build-essential
+  - apt-get install -yqq --no-install-recommends build-essential autoconf automake libtool
+  - git submodule update --init --recursive
 
 # Use cargo to test the project
 test:cargo:
