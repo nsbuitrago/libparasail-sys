@@ -2,6 +2,7 @@ extern crate bindgen;
 
 use std::env;
 use std::path::PathBuf;
+use std::fs::copy;
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -45,6 +46,35 @@ fn main() {
     // This is the path to the `c` headers file.
     let headers_path = libdir_path.join("parasail.h");
     let headers_path_str = headers_path.to_str().expect("Path is not a valid string");
+    
+    // copy static library to OUT_DIR so we can clean up the build directory
+    let target_file = format!("{}/libparasail.a", out_dir);
+    copy(&libdir_path.join(".libs/libparasail.a"), &target_file).expect("Failed to copy libparasail.a");
+
+     // Check if we are packaging for crates.io upload
+    if env::var("CRATE_PACKAGING").is_ok() {
+        // Clean up the temporary build files
+        let make_clean_status = std::process::Command::new("make")
+            .current_dir(&libdir_path)
+            .arg("clean")
+            .status()
+            .expect("Failed to execute make clean");
+
+        if !make_clean_status.success() {
+            eprintln!("Warning: make clean failed");
+        }
+
+        // Clean up the configuration files
+        let make_distclean_status = std::process::Command::new("make")
+            .arg("distclean")
+            .current_dir(&libdir_path)
+            .status()
+            .expect("Failed to execute make distclean");
+
+        if !make_distclean_status.success() {
+            eprintln!("Warning: make distclean failed");
+        }
+    }
 
     // Tell cargo to tell rustc to link the parasail system library.
     println!("cargo:rustc-link-search=native={}/lib", out_dir);
@@ -70,5 +100,7 @@ fn main() {
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
+
+
 }
 
