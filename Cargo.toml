@@ -10,11 +10,8 @@ license = "BSD-3-Clause"
 description = "Unsafe Rust bindings for the parasail C library"
 keywords = ["bioinformatics", "alignment", "parasail", "rust", "ffi"]
 edition = "2021"
-include = ["src", "build.rs", "parasail"]
-
-[lib]
-name = "libparasail_sys"
-crate-type = ["cdylib"]
+exclude = ["parasail/apps", "parasail/images", "parasail/tests",
+"parasail/travis", "parasail/cmake", "parasail/data", "parasail/util"]
 
 [build-dependencies]
 bindgen = "0.69.4"

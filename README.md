@@ -1,14 +1,14 @@
 # libparasail-sys
 
 This crate provides unsafe Rust bindings for [parasail](https://github.com/jeffdaily/parasail).
-libparasail-sys uses an autotools build for the C library and bindgen to generate Rust bindings. Safe bindings are planned and will be available in the future.
+libparasail-sys builds the parasail C library and uses bindgen to generate Rust bindings. Safe bindings are planned and will be available in the future.
 
 Note that [parasail-sys](https://github.com/anp/parasail-sys) similarly provides unsafe Rust bindings, but has been archived since 2020.
-The goal of libparasail-sys is to provide an up to date set of bindings for parasail.
+The goal of libparasail-sys is to provide a more up-to-date set of bindings for parasail.
 
 ## Building
 
-The parasail C library is built using the preferred autools-based method. You will need a compatible toolchain for these steps.
+The parasail C library is built using the preferred autools-based method. You will need a compatible toolchain for these steps. Note that you may have to run `autoreconf -fi` to generate the autotools files since the GitHub repositories do not include them.
 Assuming you have [cargo](https://doc.rust-lang.org/stable/cargo/) setup, you can build libparasail-sys to check that the bindings compile with `cargo build`.
 
 ## Testing
