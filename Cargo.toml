@@ -22,6 +22,5 @@ crate-type = ["cdylib"]
 
 [build-dependencies]
 bindgen = "0.69.4"
-cc = "1.0.83"
 pkg-config = "0.3.30"
 
