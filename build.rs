@@ -44,36 +44,24 @@ fn main() {
     let headers_path = parasail_dir.join("parasail.h");
     let headers_path_str = headers_path.to_str().unwrap();
 
-    let configure_script = parasail_dir.join("configure");
-    assert!(Command::new(configure_script)
-        .arg(format!("--prefix={}", out_dir))
+    assert!(Command::new("cmake")
+        .args(&["-DBUILD_SHARED_LIBS=OFF", parasail_dir.to_str().unwrap()])
         .current_dir(&parasail_build)
         .status()
         .unwrap()
-        .success(), "Failed to configure");
+        .success(), "Failed to cmake"
+    );
 
-    assert!(std::process::Command::new("make")
+    assert!(Command::new("make")
         .current_dir(&parasail_build)
         .status()
         .unwrap()
-        .success(), "Failed to make");
+        .success(), "Failed to make"
+    );
 
-    assert!(std::process::Command::new("make")
-        .arg("install")
-        .current_dir(&parasail_build)
-        .status()
-        .unwrap()
-        .success(), "Failed to make install");
 
-    assert!(std::process::Command::new("make")
-        .arg("clean")
-        .current_dir(&parasail_build)
-        .status()
-        .unwrap()
-        .success(), "Failed to make clean");
-
-    println!("cargo:rustc-link-search=native={}/lib", out_dir);
-    println!("cargo:rustc-link-lib=static=parasail");
+    // println!("cargo:rustc-link-search=native={}", parasail_build.display());
+    // println!("cargo:rustc-link-lib=static=parasail");
 
     let bindings = bindgen::Builder::default()
         .header(headers_path_str)
