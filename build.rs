@@ -32,11 +32,6 @@ fn main() {
     //  return;
     // }
     //
-    // if !Path::new("parasail_dev/src").exists() {
-    //     let _ = Command::new("git")
-    //         .args(&["submodule", "update", "--init", "parasail"])
-    //         .status();
-    // }
 
     let project_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let out_dir = env::var("OUT_DIR").unwrap();
