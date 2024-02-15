@@ -1,21 +1,17 @@
 # libparasail-sys
 
-This crate provides unsafe Rust bindings for [parasail](https://github.com/jeffdaily/parasail).
-libparasail-sys uses an autotools build for the C library and bindgen to generate Rust bindings. Safe bindings are planned and will be available in the future.
+This crate provides unsafe Rust bindings for [parasail](https://github.com/jeffdaily/parasail). Safe bindings are planned and will be available in the future.
 
 Note that [parasail-sys](https://github.com/anp/parasail-sys) similarly provides unsafe Rust bindings, but has been archived since 2020.
-The goal of libparasail-sys is to provide an up to date set of bindings for parasail.
+The intention of libparasail-sys is to provide an up to date set of bindings for parasail in case things change in the original library.
 
 ## Building
 
-The parasail C library is built using the preferred autools-based method. You will need a compatible toolchain for these steps.
-Assuming you have [cargo](https://doc.rust-lang.org/stable/cargo/) setup, you can build libparasail-sys to check that the bindings compile with `cargo build`.
+Assuming you have [cargo](https://doc.rust-lang.org/stable/cargo/) setup, you can build libparasail-sys to check that the bindings compile with `cargo build`. Note that we try and use system parasail by default and then try to build using CMake if no system package is found (see [build.rs](https://gitlab.com/nsbuitrago/libparasail-sys/-/blob/main/build.rs?ref_type=heads) or the [CMake build instructions](https://github.com/jeffdaily/parasail/tree/master?tab=readme-ov-file#cmake-build) in the original library repo). To force using system parasail, set the `PARASAIL_NO_VENDOR=1` environment variable.
 
-## Testing
+# Testing
 
-Bindgen provides tests to verify that the layout, size, and alignment of the generated FFI structs match what bindgen thinks they should be.
-To check, run `cargo test`. Assuming no modification has been made to the `bindings.rs`, this should pass successfully. This crate has been
-tested with cargo 1.77.0-nightly.
+Bindgen provides tests to check the generated FFI structs. For verification, run `cargo test`. Assuming no modification has been made to the `bindings.rs`, this should pass successfully. This crate has been tested with cargo 1.77.0-nightly.
 
 ## Contributing
 
@@ -26,5 +22,5 @@ other issues or feedback at nsb5 [at] rice.edu.
 
 libparasail-sys is licensed under the BSD-3-clause license, however, parasail is licensed under a very similar Batelle BSD-style license and was developed by [Jeff Daily](https://github.com/jeffdaily) along with other contributors.
 
-Nicolas Buitrago \<nsb5@rice.edu\>
+Nicolas Buitrago \<nsb5 [@] rice.edu\>
 
