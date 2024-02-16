@@ -1,74 +1,98 @@
 extern crate bindgen;
+extern crate pkg_config;
 
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use std::process::Command;
+
+fn try_system_parasail() -> Result<pkg_config::Library, pkg_config::Error> {
+    let mut cfg = pkg_config::Config::new();
+    match cfg.atleast_version("2.4.2").probe("parasail") {
+        Ok(lib) => {
+            for include in &lib.include_paths {
+                println!("cargo:root={}", include.display());
+            }
+            Ok(lib)
+        },
+        Err(e) => {
+            println!("cargo:warning=Could not find system parasail: {e}",);
+            Err(e)
+        }
+    }
+}
 
 fn main() {
-    let out_dir = env::var("OUT_DIR").unwrap();
-    // This is the directory where the `c` library is located.
-    let libdir_path = PathBuf::from("parasail")
-        // Canonicalize the path as `rustc-link-search` requires an absolute
-        // path.
+    let vendored = env::var("CARGO_FEATURE_VENDORED").is_ok();
+    let zlib_ng_compat = env::var("CARGO_FEATURE_ZLIB_NG_COMPAT").is_ok();
+
+    // Use `PARASAIL_NO_VENDOR` to try and force to use system parasail.
+    println!("cargo:rerun-if-env-changed=PARASAIL_NO_VENDOR");
+    let force_no_vendor = env::var("PARASAIL_NO_VENDOR").map_or(false, |v| v != "0");
+
+    if force_no_vendor {
+        if try_system_parasail().is_err() {
+            panic!(
+                "The environment variable `PARASAIL_NO_VENDOR` is set, but no system parasail was found.
+                Please install parasail or unset `PARASAIL_NO_VENDOR` or use `PARASAIL_NO_VENDOR=0`."
+            );
+        }
+
+        return;
+    }
+
+    let use_system_parasail = !vendored && !zlib_ng_compat;
+    if use_system_parasail && try_system_parasail().is_ok() {
+        // no issues with system parasail
+        return;
+    }
+
+    println!("cargo:rustc-cfg=parasail_vendored");
+    let project_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+
+    if !Path::new("parasail").exists() {
+        let _ = Command::new("git")
+            .args(&["submodule", "update", "--init", "libgit2"])
+            .status();
+    }
+
+    let parasail_dir = PathBuf::from(&project_dir).join("parasail")
         .canonicalize()
-        .expect("cannot canonicalize path");
+        .expect("Failed to find parasail directory");
 
- // configure Parasail
-    assert!(std::process::Command::new("sh")
-        .arg("-c")
-        .arg("autoreconf -fi")
-        .current_dir(&libdir_path)
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let parasail_build = PathBuf::from(&out_dir).join("parasail_build");
+    std::fs::create_dir_all(&parasail_build).unwrap();
+
+    let headers_path = parasail_dir.join("parasail.h");
+    let headers_path_str = headers_path.to_str().unwrap();
+
+    assert!(Command::new("cmake")
+        .args(&["-DBUILD_SHARED_LIBS=OFF", parasail_dir.to_str().unwrap()])
+        .current_dir(&parasail_build)
         .status()
         .unwrap()
-        .success(), "Failed to autoreconf");
+        .success(), "Failed to cmake"
+    );
 
-    assert!(std::process::Command::new("./configure")
-        .arg(format!("--prefix={}", out_dir))
-        .current_dir(&libdir_path)
+    assert!(Command::new("make")
+        .current_dir(&parasail_build)
         .status()
         .unwrap()
-        .success(), "Failed to configure");
+        .success(), "Failed to make"
+    );
 
-    // build Parasail
-    assert!(std::process::Command::new("make")
-        .current_dir(&libdir_path)
-        .status()
-        .unwrap()
-        .success(), "Failed to make");
-
-    assert!(std::process::Command::new("make")
-        .arg("install")
-        .current_dir(&libdir_path)
-        .status()
-        .unwrap()
-        .success(), "Failed to make install");
-
-    // This is the path to the `c` headers file.
-    let headers_path = libdir_path.join("parasail.h");
-    let headers_path_str = headers_path.to_str().expect("Path is not a valid string");
-
-    // Tell cargo to tell rustc to link the parasail system library.
-    println!("cargo:rustc-link-search=native={}/lib", out_dir);
+    println!("cargo:rustc-link-search=native={}", parasail_build.display());
     println!("cargo:rustc-link-lib=static=parasail");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
     let bindings = bindgen::Builder::default()
-        // The input header we would like to generate
-        // bindings for.
         .header(headers_path_str)
-        // Tell cargo to invalidate the built crate whenever any of the
-        // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
-        // Finish the builder and generate the bindings.
         .generate()
-        // Unwrap the Result and panic on failure.
         .expect("Unable to generate bindings");
 
-    // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from(out_dir);
     bindings
-        .write_to_file(out_path.join("bindings.rs"))
+        .write_to_file(out_path.join("parasail_bindings.rs"))
         .expect("Couldn't write bindings!");
 }
 

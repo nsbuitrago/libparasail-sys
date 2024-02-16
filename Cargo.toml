@@ -1,7 +1,20 @@
 [package]
 name = "libparasail-sys"
-version = "0.1.1"
+version = "0.1.0"
+authors = ["Nicolas S. Buitrago <nsb5@rice.edu>"]
+links = "parasail"
+build = "build.rs"
+repository = "https://gitlab.com/nsbuitrago/libparasail-sys"
+documentation = "https://docs.rs/libparasail_sys"
+license = "BSD-3-Clause"
+description = "Unsafe Rust bindings for the parasail C library"
+keywords = ["bioinformatics", "alignment", "parasail", "rust", "ffi"]
 edition = "2021"
+include = [
+	"src/", "build.rs", "parasail/parasail.h", "parasail/parasail", "parasail/src", 
+	"parasail/contrib", "parasail/CMakeLists.txt", "parasail/cmake/", "parasail/apps",
+	"parasail/tests/", "parasail/README.md", "parasail/LICENSE.md"
+]
 
 [lib]
 name = "libparasail_sys"
@@ -9,3 +22,5 @@ crate-type = ["cdylib"]
 
 [build-dependencies]
 bindgen = "0.69.4"
+pkg-config = "0.3.30"
+
