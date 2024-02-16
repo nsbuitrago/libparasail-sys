@@ -5,22 +5,6 @@ use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-fn try_system_parasail() -> Result<pkg_config::Library, pkg_config::Error> {
-    let mut cfg = pkg_config::Config::new();
-    match cfg.atleast_version("2.4.2").probe("parasail") {
-        Ok(lib) => {
-            for include in &lib.include_paths {
-                println!("cargo:root={}", include.display());
-            }
-            Ok(lib)
-        },
-        Err(e) => {
-            println!("cargo:warning=Could not find system parasail: {e}",);
-            Err(e)
-        }
-    }
-}
-
 fn main() {
     let vendored = env::var("CARGO_FEATURE_VENDORED").is_ok();
     let zlib_ng_compat = env::var("CARGO_FEATURE_ZLIB_NG_COMPAT").is_ok();
@@ -45,13 +29,45 @@ fn main() {
         // no issues with system parasail
         return;
     }
+    
+    build_parasail();
+}
 
+fn try_system_parasail() -> Result<pkg_config::Library, pkg_config::Error> {
+    let mut cfg = pkg_config::Config::new();
+    match cfg.atleast_version("2.4.2").probe("parasail") {
+        Ok(lib) => {
+            // tell cargo to look for shared libraries in the specified directory
+            println!("cargo:rustc-link-search=native={}", lib.link_paths[0].display());
+            // tell cargo to link the system parasail shared lib
+            println!("cargo:rustc-link-lib=parasail");
+
+            let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+            let bindings = bindgen::Builder::default()
+                .header("wrapper.h")
+                .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+                .generate()
+                .expect("Unable to generate bindings");
+            bindings
+                .write_to_file(out_path.join("parasail_bindings.rs"))
+                .expect("Couldn't write bindings!");
+
+            Ok(lib)
+        },
+        Err(e) => {
+            println!("cargo:warning=Could not find system parasail: {e}",);
+            Err(e)
+        }
+    }
+}
+
+fn build_parasail() {
     println!("cargo:rustc-cfg=parasail_vendored");
     let project_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
 
-    if !Path::new("parasail").exists() {
+    if !Path::new("parasail/src").exists() {
         let _ = Command::new("git")
-            .args(&["submodule", "update", "--init", "libgit2"])
+            .args(&["submodule", "update", "--init", "parasail"])
             .status();
     }
 

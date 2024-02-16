@@ -11,7 +11,7 @@ description = "Unsafe Rust bindings for the parasail C library"
 keywords = ["bioinformatics", "alignment", "parasail", "rust", "ffi"]
 edition = "2021"
 include = [
-	"src/", "build.rs", "parasail/parasail.h", "parasail/parasail", "parasail/src", 
+	"src/", "build.rs", "wrapper.h", "parasail/parasail.h", "parasail/parasail", "parasail/src", 
 	"parasail/contrib", "parasail/CMakeLists.txt", "parasail/cmake/", "parasail/apps",
 	"parasail/tests/", "parasail/README.md", "parasail/LICENSE.md"
 ]
