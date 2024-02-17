@@ -2,6 +2,12 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.1.2 - 2024-02-17
+
+### Changed
+
+- Moved bindings out of private parasail_bindings module (now removed) to be able to access public functions.
+
 ## 0.1.1 - 2024.02.16
 
 ### Changed
