@@ -2,7 +2,13 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
-## 0.1.2 - 2024-02-17
+## 0.1.3 - 2024.02.17
+
+### Changed
+
+- Use standard lib crate type for allowing use as dependency from other projects
+
+## 0.1.2 - 2024.02.17
 
 ### Changed
 
