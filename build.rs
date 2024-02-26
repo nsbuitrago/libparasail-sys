@@ -33,6 +33,19 @@ fn main() {
     build_parasail();
 }
 
+fn bindgen_build(header: &str) {
+    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let bindings = bindgen::Builder::default()
+        .header(header)
+        .allowlist_item("parasail_.*")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .generate()
+        .expect("Unable to generate bindings");
+    bindings
+        .write_to_file(out_path.join("parasail_bindings.rs"))
+        .expect("Couldn't write bindings!");
+}
+
 fn try_system_parasail() -> Result<pkg_config::Library, pkg_config::Error> {
     let mut cfg = pkg_config::Config::new();
     match cfg.atleast_version("2.4.2").probe("parasail") {
@@ -42,16 +55,7 @@ fn try_system_parasail() -> Result<pkg_config::Library, pkg_config::Error> {
             // tell cargo to link the system parasail shared lib
             println!("cargo:rustc-link-lib=parasail");
 
-            let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-            let bindings = bindgen::Builder::default()
-                .header("wrapper.h")
-                .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
-                .generate()
-                .expect("Unable to generate bindings");
-            bindings
-                .write_to_file(out_path.join("parasail_bindings.rs"))
-                .expect("Couldn't write bindings!");
-
+            bindgen_build("wrapper.h");
             Ok(lib)
         },
         Err(e) => {
@@ -100,15 +104,6 @@ fn build_parasail() {
     println!("cargo:rustc-link-search=native={}", parasail_build.display());
     println!("cargo:rustc-link-lib=static=parasail");
 
-    let bindings = bindgen::Builder::default()
-        .header(headers_path_str)
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
-        .generate()
-        .expect("Unable to generate bindings");
-
-    let out_path = PathBuf::from(out_dir);
-    bindings
-        .write_to_file(out_path.join("parasail_bindings.rs"))
-        .expect("Couldn't write bindings!");
+    bindgen_build(headers_path_str);
 }
 

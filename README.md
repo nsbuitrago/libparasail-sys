@@ -1,6 +1,6 @@
 # libparasail-sys
 
-This crate provides unsafe Rust bindings for [parasail](https://github.com/jeffdaily/parasail). Safe bindings are planned and will be available in the future.
+This crate provides unsafe Rust bindings for [parasail](https://github.com/jeffdaily/parasail). You might be interested in [parasail-rs](https://gitlab.com/nsbuitrago/parasail-rs), which provides safe Rust bindings and a wrapper to parasail.
 
 Note that [parasail-sys](https://github.com/anp/parasail-sys) similarly provides unsafe Rust bindings, but has been archived since 2020.
 The intention of libparasail-sys is to provide an up to date set of bindings for parasail in case things change in the original library.

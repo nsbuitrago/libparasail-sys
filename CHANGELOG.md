@@ -2,6 +2,10 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.1.4 - 2024.02.25
+
+- Allowlist only items with "parasail" prefix
+
 ## 0.1.3 - 2024.02.17
 
 ### Changed
