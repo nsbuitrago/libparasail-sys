@@ -1,5 +1,7 @@
 # libparasail-sys
 
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/nsbuitrago/libparasail-sys/test.yml)](https://github.com/nsbuitrago/parasail-rs/actions/workflows/test.yml) [![docs.rs](https://img.shields.io/docsrs/libparasail-sys)](https://docs.rs/libparasail-sys/latest/libparasail_sys/index.html) [![Crates.io Version](https://img.shields.io/crates/v/libparasail-sys)](https://crates.io/crates/libparasail-sys)
+
 This crate provides unsafe Rust bindings for [parasail](https://github.com/jeffdaily/parasail). You might be interested in [parasail-rs](https://gitlab.com/nsbuitrago/parasail-rs), which provides safe Rust bindings and a wrapper to parasail.
 
 Note that [parasail-sys](https://github.com/anp/parasail-sys) similarly provides unsafe Rust bindings, but has been archived since 2020.
