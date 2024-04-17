@@ -29,7 +29,7 @@ fn main() {
         // no issues with system parasail
         return;
     }
-    
+
     build_parasail();
 }
 
@@ -51,13 +51,16 @@ fn try_system_parasail() -> Result<pkg_config::Library, pkg_config::Error> {
     match cfg.atleast_version("2.4.2").probe("parasail") {
         Ok(lib) => {
             // tell cargo to look for shared libraries in the specified directory
-            println!("cargo:rustc-link-search=native={}", lib.link_paths[0].display());
+            println!(
+                "cargo:rustc-link-search=native={}",
+                lib.link_paths[0].display()
+            );
             // tell cargo to link the system parasail shared lib
             println!("cargo:rustc-link-lib=parasail");
 
             bindgen_build("wrapper.h");
             Ok(lib)
-        },
+        }
         Err(e) => {
             println!("cargo:warning=Could not find system parasail: {e}",);
             Err(e)
@@ -75,7 +78,8 @@ fn build_parasail() {
             .status();
     }
 
-    let parasail_dir = PathBuf::from(&project_dir).join("parasail")
+    let parasail_dir = PathBuf::from(&project_dir)
+        .join("parasail")
         .canonicalize()
         .expect("Failed to find parasail directory");
 
@@ -86,24 +90,35 @@ fn build_parasail() {
     let headers_path = parasail_dir.join("parasail.h");
     let headers_path_str = headers_path.to_str().unwrap();
 
-    assert!(Command::new("cmake")
-        .args(&["-DBUILD_SHARED_LIBS=OFF", parasail_dir.to_str().unwrap()])
-        .current_dir(&parasail_build)
-        .status()
-        .unwrap()
-        .success(), "Failed to cmake"
+    assert!(
+        Command::new("cmake")
+            .args(&[
+                "-DBUILD_SHARED_LIBS=OFF",
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+                parasail_dir.to_str().unwrap()
+            ])
+            .current_dir(&parasail_build)
+            .status()
+            .unwrap()
+            .success(),
+        "Failed to cmake"
     );
 
-    assert!(Command::new("make")
-        .current_dir(&parasail_build)
-        .status()
-        .unwrap()
-        .success(), "Failed to make"
+    assert!(
+        Command::new("make")
+            .current_dir(&parasail_build)
+            .status()
+            .unwrap()
+            .success(),
+        "Failed to make"
     );
 
-    println!("cargo:rustc-link-search=native={}", parasail_build.display());
+    println!(
+        "cargo:rustc-link-search=native={}",
+        parasail_build.display()
+    );
     println!("cargo:rustc-link-lib=static=parasail");
 
     bindgen_build(headers_path_str);
 }
-

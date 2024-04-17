@@ -2,6 +2,13 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.1.5 - 2024.04.16
+
+### Features
+
+- Add -DCMAKE_BUILD_TYPE=release and -DCMAKE_POSITION_INDEPENDENT_CODE=ON to
+fix some linking issues with PyO3.
+
 ## 0.1.4 - 2024.02.25
 
 - Allowlist only items with "parasail" prefix
