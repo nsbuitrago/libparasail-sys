@@ -1,6 +1,7 @@
 extern crate bindgen;
 extern crate pkg_config;
 
+use cmake::Config;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -100,7 +101,7 @@ fn build_parasail() {
             ])
             .current_dir(&parasail_build)
             .status()
-            .unwrap()
+            .expect("Error: cmake command failed. Is cmake installed?")
             .success(),
         "Failed to cmake"
     );
