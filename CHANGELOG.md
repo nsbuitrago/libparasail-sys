@@ -2,7 +2,14 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
-## 0.1.5 - 2024.04.16
+## 0.1.7 - 2024.11.1
+
+### Changed
+
+- Add better missing CMake errors
+- bump pkg-config, bindgen deps
+
+## 0.1.5/0.1.6 - 2024.04.16
 
 ### Features
 
