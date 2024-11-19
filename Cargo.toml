@@ -1,6 +1,6 @@
 [package]
 name = "libparasail-sys"
-version = "0.1.7"
+version = "0.1.8"
 authors = ["Nicolas S. Buitrago <nsb5@rice.edu>"]
 links = "parasail"
 build = "build.rs"
@@ -17,6 +17,6 @@ include = [
 ]
 
 [build-dependencies]
-bindgen = "0.70.1"
+bindgen = "0.69.5"
 pkg-config = "0.3.31"
 
