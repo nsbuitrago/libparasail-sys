@@ -2,6 +2,13 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.1.8 - 2024.11.18
+
+### Fixed
+
+- Bindgen >= v0.70 introduced unstable library feature offset_of, causing
+Rust < 1.81.0 compilation errors.
+
 ## 0.1.7 - 2024.11.1
 
 ### Changed
