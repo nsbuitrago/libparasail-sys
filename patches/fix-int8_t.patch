@@ -1,11 +1,11 @@
---- parasail/tests/test_verify_traces.c.orig	2025-01-08 15:28:20
-+++ parasail/tests/test_verify_traces.c	2025-01-08 15:28:37
-@@ -177,7 +177,7 @@
-                         saturated += 1;
-                         continue;
-                     }
--                    ref_trace_table = parasail_result_get_trace_table(reference_result);
-+                    ref_trace_table = (int8_t*)parasail_result_get_trace_table(reference_result);
-                     trace_table = parasail_result_get_trace_table(result);
-                     if (reference_result->score != result->score) {
- #pragma omp critical(printer)
+--- parasail/tests/test_verify_traces.c.orig	2025-01-08 16:12:33
++++ parasail/tests/test_verify_traces.c	2025-01-08 16:12:52
+@@ -151,7 +151,7 @@
+                     parasail_result_t *result = NULL;
+                     unsigned long a = 0;
+                     unsigned long b = 1;
+-                    int8_t *ref_trace_table = NULL;
++                    int *ref_trace_table = NULL;
+                     int *trace_table = NULL;
+                     size_t size_a = 0;
+                     size_t size_b = 0;
