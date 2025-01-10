@@ -99,13 +99,6 @@ fn build_parasail() {
         panic!("CMake not found and required to build libparasail-sys");
     }
 
-    let patch_file = "patches/fix-int8_t.patch";
-    let status = Command::new("patch")
-        .args(&["-p0", "-i", patch_file])
-        .status()
-        .expect("Failed to apply patch");
-    assert!(status.success(), "Parasail patches failed to apply");
-
     assert!(
         Command::new("cmake")
             .args([
@@ -122,7 +115,12 @@ fn build_parasail() {
     );
 
     assert!(
-        Command::new("make")
+        Command::new("cmake")
+            .args([
+                "--build",
+                &parasail_build.to_str().unwrap(),
+                "--target parasail",
+            ])
             .current_dir(&parasail_build)
             .status()
             .unwrap()
