@@ -115,7 +115,12 @@ fn build_parasail() {
     );
 
     assert!(
-        Command::new("make")
+        Command::new("cmake")
+            .args([
+                "--build",
+                &parasail_build.to_str().unwrap(),
+                "--target parasail"
+            ])
             .current_dir(&parasail_build)
             .status()
             .unwrap()
