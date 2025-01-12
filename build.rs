@@ -75,7 +75,7 @@ fn build_parasail() {
 
     if !Path::new("parasail/src").exists() {
         let _ = Command::new("git")
-            .args(&["submodule", "update", "--init", "parasail"])
+            .args(["submodule", "update", "--init", "parasail"])
             .status();
     }
 
@@ -91,9 +91,18 @@ fn build_parasail() {
     let headers_path = parasail_dir.join("parasail.h");
     let headers_path_str = headers_path.to_str().unwrap();
 
+    println!("cargo:warning=Checking for CMake...");
+    if Command::new("cmake").arg("--version").output().is_err() {
+        println!("cargo:warning===========================================");
+        println!("cargo:warning=Failed to find CMake installation!");
+        println!("cargo:warning=This crate requires CMake to build.");
+        println!("cargo:warning=Please install CMake");
+        panic!("CMake not found and required to build libparasail-sys");
+    }
+
     assert!(
         Command::new("cmake")
-            .args(&[
+            .args([
                 "-DBUILD_SHARED_LIBS=OFF",
                 "-DCMAKE_BUILD_TYPE=Release",
                 "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
@@ -107,7 +116,12 @@ fn build_parasail() {
     );
 
     assert!(
-        Command::new("make")
+        Command::new("cmake")
+            .args([
+                "--build",
+                &parasail_build.to_str().unwrap(),
+                "--target parasail"
+            ])
             .current_dir(&parasail_build)
             .status()
             .unwrap()
