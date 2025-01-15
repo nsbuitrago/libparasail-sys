@@ -1,6 +1,6 @@
 [package]
 name = "libparasail-sys"
-version = "0.1.8"
+version = "0.1.9"
 authors = ["Nicolas S. Buitrago <nsb5@rice.edu>"]
 links = "parasail"
 build = "build.rs"

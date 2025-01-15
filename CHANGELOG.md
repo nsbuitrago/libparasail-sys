@@ -2,6 +2,12 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.1.9 - 2025.01.14
+
+### Changed
+
+- Skip building aligner application and tests.
+
 ## 0.1.8 - 2024.11.18
 
 ### Fixed
