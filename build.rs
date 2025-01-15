@@ -1,7 +1,6 @@
 extern crate bindgen;
 extern crate pkg_config;
 
-use cmake::Config;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
