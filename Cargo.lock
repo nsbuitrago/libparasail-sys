@@ -136,7 +136,7 @@ dependencies = [
 
 [[package]]
 name = "libparasail-sys"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "bindgen",
  "pkg-config",

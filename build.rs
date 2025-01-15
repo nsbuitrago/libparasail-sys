@@ -109,13 +109,18 @@ fn build_parasail() {
             ])
             .current_dir(&parasail_build)
             .status()
-            .unwrap()
+            .expect("Error: cmake command failed. Is cmake installed?")
             .success(),
         "Failed to cmake"
     );
 
     assert!(
-        Command::new("make")
+        Command::new("cmake")
+            .args([
+                "--build",
+                &parasail_build.to_str().unwrap(),
+                "--target parasail"
+            ])
             .current_dir(&parasail_build)
             .status()
             .unwrap()
