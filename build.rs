@@ -99,6 +99,16 @@ fn build_parasail() {
         panic!("CMake not found and required to build libparasail-sys");
     }
 
+    let cmake_ver_patch = Command::new("patch")
+        .args(&["-p0", "-i", "patches/min-cmake-version.patch"])
+        .status()
+        .expect("Failed to apply minimum CMake version patch");
+
+    assert!(
+        cmake_ver_patch.success(),
+        "Minimum CMake patch was not successfully applied"
+    );
+
     assert!(
         Command::new("cmake")
             .args([
