@@ -28,6 +28,8 @@ instructions](https://github.com/jeffdaily/parasail/tree/master?tab=readme-ov-fi
 in the original library repo). To force using system parasail, set the
 `PARASAIL_NO_VENDOR=1` environment variable.
 
+Note: building the parasail library now requires CMake >= 3.5
+
 ## Testing
 
 Bindgen provides tests to check the generated FFI structs. For verification, run
