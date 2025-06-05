@@ -119,7 +119,8 @@ fn build_parasail() {
             .args([
                 "--build",
                 &parasail_build.to_str().unwrap(),
-                "--target parasail"
+                "--target",
+                "parasail"
             ])
             .current_dir(&parasail_build)
             .status()
