@@ -2,6 +2,18 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.1.11 - 2025.06.06
+
+### Fixed
+
+- CMake argument formatting
+
+## 0.1.10 - 2025.06.03
+
+### Changed
+
+- update minimum CMake version to 3.5 
+
 ## 0.1.9 - 2025.01.14
 
 ### Changed
