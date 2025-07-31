@@ -2,6 +2,12 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.1.12 - 2025-07-31
+
+### Improvements
+
+- Use cmake crate for better cross compilation support
+
 ## 0.1.11 - 2025.06.06
 
 ### Fixed
@@ -12,7 +18,7 @@ All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.D
 
 ### Changed
 
-- update minimum CMake version to 3.5 
+- update minimum CMake version to 3.5
 
 ## 0.1.9 - 2025.01.14
 
@@ -75,5 +81,3 @@ fix some linking issues with PyO3.
 ### Closed Issues
 
 - Use CMake instead of autotools for building parasail from source [#2](https://gitlab.com/nsbuitrago/libparasail-sys/-/issues/2)
-
-
