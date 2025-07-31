@@ -1,6 +1,6 @@
 [package]
 name = "libparasail-sys"
-version = "0.1.11"
+version = "0.1.12"
 authors = ["Nicolas S. Buitrago <nsb5@rice.edu>"]
 links = "parasail"
 build = "build.rs"
@@ -11,12 +11,22 @@ description = "Unsafe Rust bindings for the parasail C library"
 keywords = ["bioinformatics", "alignment", "parasail", "rust", "ffi"]
 edition = "2021"
 include = [
-	"src/", "build.rs", "wrapper.h", "parasail/parasail.h", "parasail/parasail", "parasail/src", 
-	"parasail/contrib", "parasail/CMakeLists.txt", "parasail/cmake/", "parasail/apps",
-	"parasail/tests/", "parasail/README.md", "parasail/LICENSE.md"
+    "src/",
+    "build.rs",
+    "wrapper.h",
+    "parasail/parasail.h",
+    "parasail/parasail",
+    "parasail/src",
+    "parasail/contrib",
+    "parasail/CMakeLists.txt",
+    "parasail/cmake/",
+    "parasail/apps",
+    "parasail/tests/",
+    "parasail/README.md",
+    "parasail/LICENSE.md",
 ]
 
 [build-dependencies]
 bindgen = "0.69.5"
 pkg-config = "0.3.31"
-
+cmake = "0.1.54"

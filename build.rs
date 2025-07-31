@@ -1,6 +1,7 @@
 extern crate bindgen;
 extern crate pkg_config;
 
+use cmake;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -90,49 +91,19 @@ fn build_parasail() {
     let headers_path = parasail_dir.join("parasail.h");
     let headers_path_str = headers_path.to_str().unwrap();
 
-    println!("cargo:warning=Checking for CMake...");
-    if Command::new("cmake").arg("--version").output().is_err() {
-        println!("cargo:warning===========================================");
-        println!("cargo:warning=Failed to find CMake installation!");
-        println!("cargo:warning=This crate requires CMake to build.");
-        println!("cargo:warning=Please install CMake");
-        panic!("CMake not found and required to build libparasail-sys");
-    }
+    // build parasail
+    let dst = cmake::Config::new(&parasail_dir)
+        .define("BUILD_SHARED_LIBS", "OFF")
+        .define("POSITION_INDEPENDENT_CODE", "ON")
+        .build_target("parasail")
+        .very_verbose(true)
+        .out_dir(parasail_build)
+        .build();
 
-    assert!(
-        Command::new("cmake")
-            .args([
-                "-DBUILD_SHARED_LIBS=OFF",
-                "-DCMAKE_BUILD_TYPE=Release",
-                "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
-                parasail_dir.to_str().unwrap()
-            ])
-            .current_dir(&parasail_build)
-            .status()
-            .expect("Error: cmake command failed. Is cmake installed?")
-            .success(),
-        "Failed to cmake"
-    );
+    let lib_path = dst.join("build");
 
-    assert!(
-        Command::new("cmake")
-            .args([
-                "--build",
-                &parasail_build.to_str().unwrap(),
-                "--target",
-                "parasail"
-            ])
-            .current_dir(&parasail_build)
-            .status()
-            .unwrap()
-            .success(),
-        "Failed to make"
-    );
-
-    println!(
-        "cargo:rustc-link-search=native={}",
-        parasail_build.display()
-    );
+    // Add the library search path
+    println!("cargo:rustc-link-search=native={}", lib_path.display());
     println!("cargo:rustc-link-lib=static=parasail");
 
     bindgen_build(headers_path_str);
