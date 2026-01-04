@@ -27,6 +27,6 @@ include = [
 ]
 
 [build-dependencies]
-bindgen = "0.69.5"
+bindgen = "0.72.1"
 pkg-config = "0.3.31"
 cmake = "0.1.54"
