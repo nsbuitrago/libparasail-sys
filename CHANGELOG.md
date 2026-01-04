@@ -2,6 +2,15 @@
 
 All notable changes are detailed here with headings of \<Version\> - \<YYYY.MM.DD\> in reverse chronological order.
 
+## 0.2.0 - 2026-01-04
+
+### Update
+
+- bump deps:
+  - bindgen 0.69.5 -> 0.72.1
+  - pkg-config 0.3.31 -> 0.3.32
+  - cmake 0.1.54 -> 0.1.57
+
 ## 0.1.12 - 2025-07-31
 
 ### Improvements
