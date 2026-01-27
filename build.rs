@@ -121,6 +121,25 @@ fn build_parasail() {
         .out_dir(parasail_build)
         .build();
 
+    // Fix lib path for Windows MSVC builds
+    #[cfg(all(windows, target_env = "msvc"))]
+    let lib_path = {
+        let release_path = dst.join("build").join("Release");
+        let debug_path = dst.join("build").join("Debug");
+
+        if release_path.join("parasail.lib").exists() {
+            println!("cargo:warning=Found parasail.lib in Release directory");
+            release_path
+        } else if debug_path.join("parasail.lib").exists() {
+            println!("cargo:warning=Found parasail.lib in Debug directory");
+            debug_path
+        } else {
+            println!("cargo:warning=parasail.lib not found in Release or Debug, using default path");
+            dst.join("build")
+        }
+    };
+
+    #[cfg(not(all(windows, target_env = "msvc")))]
     let lib_path = dst.join("build");
 
     // Add the library search path
