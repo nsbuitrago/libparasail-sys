@@ -127,7 +127,7 @@ dependencies = [
 
 [[package]]
 name = "libparasail-sys"
-version = "0.2.0"
+version = "0.1.12"
 dependencies = [
  "bindgen",
  "cmake",
