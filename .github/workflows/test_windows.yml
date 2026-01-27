@@ -31,7 +31,7 @@ jobs:
 
 
       - name: Build with cargo
-        shell: bash
+        shell: pwsh
         run: |
           echo "=== Building with cargo ==="
           cargo build --release --verbose
