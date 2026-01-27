@@ -34,6 +34,24 @@ fn main() {
     build_parasail();
 }
 
+#[cfg(windows)]
+fn strip_extended_prefix(path: &Path) -> PathBuf {
+    let path_str = path.to_string_lossy();
+
+    if path_str.starts_with(r"\\?\") {
+        PathBuf::from(&path_str[4..])
+    } else if path_str.starts_with(r"\\?\UNC\") {
+        PathBuf::from(format!(r"\\{}", &path_str[8..]))
+    } else {
+        path.to_path_buf()
+    }
+}
+
+#[cfg(not(windows))]
+fn strip_extended_prefix(path: &Path) -> PathBuf {
+    path.to_path_buf()
+}
+
 fn bindgen_build(header: &str) {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let bindings = bindgen::Builder::default()
@@ -83,6 +101,9 @@ fn build_parasail() {
         .join("parasail")
         .canonicalize()
         .expect("Failed to find parasail directory");
+
+    // Strip \\?\ prefix on Windows to avoid MSVC issues
+    let parasail_dir = strip_extended_prefix(&parasail_dir);
 
     let out_dir = env::var("OUT_DIR").unwrap();
     let parasail_build = PathBuf::from(&out_dir).join("parasail_build");
