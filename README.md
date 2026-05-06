@@ -34,7 +34,7 @@ Note: building the parasail library now requires CMake >= 3.5
 
 Bindgen provides tests to check the generated FFI structs. For verification, run
 `cargo test`. Assuming no modification has been made to the `bindings.rs`, this
-should pass successfully. This crate has been tested with cargo 1.77.0 - 1.83.0-nightly
+should pass successfully. This crate has been tested with cargo 1.77.0 - 1.94.1
 
 ## Contributing
 
