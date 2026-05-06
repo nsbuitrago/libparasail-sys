@@ -34,6 +34,24 @@ fn main() {
     build_parasail();
 }
 
+#[cfg(windows)]
+fn strip_extended_prefix(path: &Path) -> PathBuf {
+    let path_str = path.to_string_lossy();
+
+    if path_str.starts_with(r"\\?\") {
+        PathBuf::from(&path_str[4..])
+    } else if path_str.starts_with(r"\\?\UNC\") {
+        PathBuf::from(format!(r"\\{}", &path_str[8..]))
+    } else {
+        path.to_path_buf()
+    }
+}
+
+#[cfg(not(windows))]
+fn strip_extended_prefix(path: &Path) -> PathBuf {
+    path.to_path_buf()
+}
+
 fn bindgen_build(header: &str) {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let bindings = bindgen::Builder::default()
@@ -84,6 +102,9 @@ fn build_parasail() {
         .canonicalize()
         .expect("Failed to find parasail directory");
 
+    // Strip \\?\ prefix on Windows to avoid MSVC issues
+    let parasail_dir = strip_extended_prefix(&parasail_dir);
+
     let out_dir = env::var("OUT_DIR").unwrap();
     let parasail_build = PathBuf::from(&out_dir).join("parasail_build");
     std::fs::create_dir_all(&parasail_build).unwrap();
@@ -100,6 +121,25 @@ fn build_parasail() {
         .out_dir(parasail_build)
         .build();
 
+    // Fix lib path for Windows MSVC builds
+    #[cfg(all(windows, target_env = "msvc"))]
+    let lib_path = {
+        let release_path = dst.join("build").join("Release");
+        let debug_path = dst.join("build").join("Debug");
+
+        if release_path.join("parasail.lib").exists() {
+            println!("cargo:warning=Found parasail.lib in Release directory");
+            release_path
+        } else if debug_path.join("parasail.lib").exists() {
+            println!("cargo:warning=Found parasail.lib in Debug directory");
+            debug_path
+        } else {
+            println!("cargo:warning=parasail.lib not found in Release or Debug, using default path");
+            dst.join("build")
+        }
+    };
+
+    #[cfg(not(all(windows, target_env = "msvc")))]
     let lib_path = dst.join("build");
 
     // Add the library search path
